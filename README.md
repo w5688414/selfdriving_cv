@@ -17,4 +17,9 @@ sudo pip install scipy
 sudo pip install numpy=1.14.5
 ./CarlaUE4.sh -windowed -ResX=640 -ResY=480
 ```
+# reference
+[CARLA Documentation][1]
+[Conditional Imitation Learning at CARLA][2]
 
+[1].https://carla.readthedocs.io/en/latest/
+[2].https://github.com/carla-simulator/imitation-learning
