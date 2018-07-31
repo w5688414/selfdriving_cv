@@ -30,6 +30,53 @@ sudo pip install numpy=1.14.5
 python run_CIL.py
 ./CarlaUE4.sh -windowed -ResX=640 -ResY=480 -carla-server
 ```
+## data instruction
+### input
+images,measurements,commdand
+
+images: data.rgb
+
+measurements: 
+    targets[:,8]---Brake Noise, float
+    targets[:,9]---Position X, float
+    targets[:,10]---Position Y, float
+    targets[:,10]---Speed, float
+    targets[:,11]---Collision Other, float
+    targets[:,12]---Collision Pedestrian, float
+    targets[:,13]---Collision Car, float
+    targets[:,14]---Opposite Lane Inter, float
+    targets[:,15]---Sidewalk Intersect, float
+
+    targets[:,21]---   Orientation X, float
+    targets[:,22]---Orientation Y, float
+    targets[:,23]---Orientation Z, float
+command: 
+    targets[:,0]---Steer, float 
+    targets[:,1]---Gas, float
+    targets[:,2]---Brake, float
+    targets[:,3]---Hand Brake, boolean
+    targets[:,4]---Reverse Gear, boolean
+    targets[:,5]---Steer Noise, float
+    targets[:,6]---Gas Noise, float
+    targets[:,7]---Brake Noise, float
+    targets[:,24]---High level command, int ( 2 Follow lane, 3 Left, 4 Right, 5 Straight)
+
+### parameter
+    targets[:,19]---Platform time, float
+    targets[:,20]---Game Time, float
+    targets[:,24]---Noise, Boolean ( If the noise, perturbation, is activated, (Not Used) )
+    targets[:,25]---Camera (Which camera was used)
+    targets[:,26]---Angle (The yaw angle for this camera)
+
+### output
+action: steering angle, acceleration
+
+targets[:,16]---Acceleration X,float
+targets[:,17]---Acceleration Y, float
+targets[:,18]---Acceleration Z, float
+
+
+
 # reference
 [CARLA Documentation][1]
 
