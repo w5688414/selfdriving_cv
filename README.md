@@ -37,6 +37,7 @@ images,measurements,commdand
 images: data.rgb
 
 measurements: 
+```
     targets[:,8]---Brake Noise, float
     targets[:,9]---Position X, float
     targets[:,10]---Position Y, float
@@ -47,10 +48,12 @@ measurements:
     targets[:,14]---Opposite Lane Inter, float
     targets[:,15]---Sidewalk Intersect, float
 
-    targets[:,21]---   Orientation X, float
+    targets[:,21]---Orientation X, float
     targets[:,22]---Orientation Y, float
     targets[:,23]---Orientation Z, float
+```
 command: 
+```
     targets[:,0]---Steer, float 
     targets[:,1]---Gas, float
     targets[:,2]---Brake, float
@@ -60,6 +63,7 @@ command:
     targets[:,6]---Gas Noise, float
     targets[:,7]---Brake Noise, float
     targets[:,24]---High level command, int ( 2 Follow lane, 3 Left, 4 Right, 5 Straight)
+```
 
 ### parameter
     targets[:,19]---Platform time, float
@@ -70,11 +74,11 @@ command:
 
 ### output
 action: steering angle, acceleration
-
-targets[:,16]---Acceleration X,float
-targets[:,17]---Acceleration Y, float
-targets[:,18]---Acceleration Z, float
-
+```
+    targets[:,16]---Acceleration X,float
+    targets[:,17]---Acceleration Y, float
+    targets[:,18]---Acceleration Z, float
+```
 
 
 # reference
