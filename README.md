@@ -30,6 +30,14 @@ sudo pip install numpy=1.14.5
 python run_CIL.py
 ./CarlaUE4.sh -windowed -ResX=640 -ResY=480 -carla-server
 ```
+# train model
+```
+sudo pip install keras
+sudo pip install imgaug
+sudo pip install opencv-python
+python train.py
+```
+
 ## data instruction
 ### input
 images,measurements,commdand
