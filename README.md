@@ -5,6 +5,14 @@ this is the repository of deep learning for self driving
 Ubuntu14.04下搜狗输入法安装：
 https://blog.csdn.net/u011006622/article/details/69281580
 
+# environment
+```
+ubuntu 14.04
+tensorflow
+carla
+python 2.7 (python 3.x not test)
+```
+
 ## install carla python
 ```
 cd PythonClient/
