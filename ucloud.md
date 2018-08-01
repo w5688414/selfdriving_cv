@@ -8,3 +8,9 @@ scp -r yolo_9000/ root@192.168.120.204:/home/wu
 or
 scp -r yolo_9000/ ubuntu@117.50.22.59:/home/ubuntu/
 ```
+
+'''
+ssh ubuntu@117.50.22.59
+查看云端文件
+df -h
+'''
