@@ -4,7 +4,17 @@
 ```
 ssh ubuntu@117.50.22.59
 上传本地文件到远程机器指定目录
-scp -r yolo_9000/ root@192.168.120.204:/home/wu
+scp -r yolo_9000/ ubuntu@117.50.22.59:/home/ubuntu/
+
+scp -r /home/ydx/Desktop/Auto\ Vechicles/CORL2017ImitationLearningData.tar.gz ubuntu@117.50.22.59:/data
+
+
+ssh ubuntu@117.50.22.59
+查看云端文件
+df -h
+
+```
+
 ```
 ## UAI Train训练平台
 ```
@@ -46,3 +56,4 @@ sudo docker push uhub.service.ucloud.cn/trytrain/trainjx:uaitrain
 [1]: https://docs.ucloud.cn/ai/uai-train/guide/tensorflow/packing
 [2]: https://docs.ucloud.cn/ai/uai-train/tutorial/tf-mnist/train
 [3]: https://docs.ucloud.cn/ai/uai-train/base/ufile/files
+
