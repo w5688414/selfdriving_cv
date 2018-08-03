@@ -26,6 +26,7 @@ import imgaug as ia
 from imgaug import augmenters as iaa
 import numpy as np
 import h5py
+import itertools
 
 from keras.layers import ConvLSTM2D, MaxPool3D, BatchNormalization, MaxPool2D
 from tensorflow.contrib.layers import batch_norm
@@ -88,16 +89,13 @@ def plotSpecialTool(data,labels,samples2Visualize=12,factors=[2,6], grayFlag=Fal
 
 
 # read an example h5 file
-datasetDirTrain = '/home/eric/self-driving/AgentHuman/SeqTrain/'
-datasetDirVal = '/home/eric/self-driving/AgentHuman/SeqVal/'
+datasetDirTrain = '/home/ydx/AutoCarlaData/AgentHuman/SeqTrain/'
+datasetDirVal = '/home/ydx/AutoCarlaData/AgentHuman/SeqVal/'
 
 
 datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5')
 datasetFilesVal = glob.glob(datasetDirVal+'*.h5')
-
 print("Len train:{0},len val{1}".format(len(datasetFilesTrain),len(datasetFilesVal)))
-
-import itertools
 
 
 def genData(fileNames=datasetFilesTrain, batchSize=200):
@@ -154,9 +152,6 @@ def genBranch(fileNames=datasetFilesTrain, branchNum=3, batchSize=200):
         yield (batchX, batchY)
 
 
-
-
-
 st = lambda aug: iaa.Sometimes(0.4, aug)
 oc = lambda aug: iaa.Sometimes(0.3, aug)
 rl = lambda aug: iaa.Sometimes(0.09, aug)
@@ -169,14 +164,7 @@ seq = iaa.Sequential([
         st(iaa.Multiply((0.10, 2.5), per_channel=0.2)), # change brightness of images (X-Y% of original value)
         rl(iaa.ContrastNormalization((0.5, 1.5), per_channel=0.5)), # improve or worsen the contrast
         #rl(iaa.Grayscale((0.0, 1))), # put grayscale
-], random_order=True)
-
-
-# source: https://github.com/carla-simulator/imitation-learning
-import numpy as np
-
-import tensorflow as tf
-
+        ], random_order=True)
 
 def weight_ones(shape, name):
     initial = tf.constant(1.0, shape=shape, name=name)
@@ -187,11 +175,9 @@ def weight_xavi_init(shape, name):
     initial = tf.get_variable(name=name, shape=shape, initializer=tf.contrib.layers.xavier_initializer())
     return initial
 
-
 def bias_variable(shape, name):
     initial = tf.constant(0.1, shape=shape, name=name)
     return tf.Variable(initial)
-
 
 class Network(object):
 
@@ -337,7 +323,6 @@ def load_imitation_learning_network(input_image, input_data, input_size, dropout
     print (x)
     """ fc2 """
     x = network_manager.fc_block(x, 512)
-
     """Process Control"""
 
     """ Speed (measurements)"""
@@ -430,7 +415,7 @@ def controlNet(inputs, targets, shape, dropoutVec, branchConfig, params, scopeNa
     return tensors
 
 
-import tensorflow as tf
+
 
 
 # params = [trainScratch, dropoutVec, image_cut, learningRate, beta1, beta2, num_images, iterNum, batchSize, valBatchSize, NseqVal, epochs, samplesPerEpoch, L2NormConst]
@@ -464,10 +449,9 @@ def Net(branchConfig, params, timeNumberFrames, prefSize=(128, 160, 3)):
     }
     return tensors  # [ inputs['inputImages','inputData'], targets['targetSpeed', 'targetController'],  'params', dropoutVec', output[optimizers, losses, branchesOutputs] ]
 
-trainScratch = True
+
 tf.reset_default_graph()
 sessGraph = tf.Graph()
-
 
 
 # use many gpus
