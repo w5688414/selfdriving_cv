@@ -88,8 +88,8 @@ def plotSpecialTool(data,labels,samples2Visualize=12,factors=[2,6], grayFlag=Fal
 
 
 # read an example h5 file
-datasetDirTrain = '/home/eric/self-driving/AgentHuman/SeqTrain/'
-datasetDirVal = '/home/eric/self-driving/AgentHuman/SeqVal/'
+datasetDirTrain = '/mnt/AgentHuman/SeqTrain/'
+datasetDirVal = '/mnt/AgentHuman/SeqVal/'
 
 
 datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5')
@@ -150,7 +150,7 @@ def genBranch(fileNames=datasetFilesTrain, branchNum=3, batchSize=200):
                     counter += 1
                     data.close()
             except:
-                print(idx, fileNames[idx])            
+                print(idx, fileNames[idx])
         yield (batchX, batchY)
 
 
@@ -390,18 +390,18 @@ def controlNet(inputs, targets, shape, dropoutVec, branchConfig, params, scopeNa
             """
             Now it works as multiplication of one hot encoded mask and reducing sum of losses.
             Could be also possilbe to do something like that:
-  
+
             def f0(): return tf.square(tf.subtract(networkTensor[0], targets[0])
             def f1(): return tf.square(tf.subtract(networkTensor[1], targets[1]))
             ... other two branches ...
-            b =  inputs[1][0] # branch number 
+            b =  inputs[1][0] # branch number
             # construct case operation in graph
             conditioned_loss = tf.case({tf.equal(b, tf.constant(0)): f0, tf.equal(b, tf.constant(1)): f1,
                       ... },
                       default=f3, exclusive=True)
             ..minimize(conditioned_loss)
 
-            That should be enough. I tested this approach in another project, should work here too.  
+            That should be enough. I tested this approach in another project, should work here too.
             """
             parts = []
             for i in range(0, len(branchConfig)):
@@ -418,7 +418,7 @@ def controlNet(inputs, targets, shape, dropoutVec, branchConfig, params, scopeNa
             mask = tf.convert_to_tensor(inputs[1][0])
             pr = tf.Print(mask, [mask], summarize=5) # one hot vector of branch num % 4 (e.g. for 5: [0,1,0,0])
             print(mask.get_shape())
-            contLoss = tf.reduce_sum(tf.multiply(tf.reduce_mean(means), mask)) # e.g. sets to 0 all branches except 5 
+            contLoss = tf.reduce_sum(tf.multiply(tf.reduce_mean(means), mask)) # e.g. sets to 0 all branches except 5
             contSolver = tf.train.AdamOptimizer(learning_rate=params[3],
                                                 beta1=params[4], beta2=params[5]).minimize(contLoss)
         tensors = {
@@ -546,11 +546,11 @@ with sessGraph.as_default():
                             netTensors['targets'][0]: ys[:, 10].reshape([batchSize, 1]),
                             netTensors['targets'][1]: ys[:, 0:3]}
 
-               
+
                 _, p, loss_value = sess.run([contSolver, pr, contLoss], feed_dict=feedDict)
 #                print(merged_summary_op)
 #                summary = merged_summary_op.eval(feed_dict=feedDict)
-                if steps % 10 == 0:  
+                if steps % 10 == 0:
 #                    summary_writer.add_summary(summary, epoch * num_images/batchSize + j)
                     print("  Train::: Epoch: %d, Step: %d, TotalSteps: %d, Loss: %g" %
                       (epoch, epoch * batchSize + j, steps, loss_value), cBranchesOutList[cur_branch])
