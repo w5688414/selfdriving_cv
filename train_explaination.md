@@ -33,13 +33,13 @@ config = tf.ConfigProto(allow_soft_placement=True)
 ## 准备数据
  - datasetDirTrain = '/home/ydx/AutoCarlaData/AgentHuman/SeqTrain/' # 训练集目录
  - datasetDirVal = '/home/ydx/AutoCarlaData/AgentHuman/SeqVal/' # 测试集目录
- - datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5') # 训练集文件总共3289
+ - datasetFilesTrain = glob.glob(datasetDirTrain+'*ddd.h5') # 训练集文件总共3289
  - datasetFilesVal = glob.glob(datasetDirVal+'*.h5') # 测试集文件总共374
 ### 网络输入数据
  - inputs： 维度为2的列表
      - input[0]=input_images 一维表示输入的图像inputImages 88*200*3；
      - input[1]=input_data 
-         input_data[0]: 一维表示输入的控制量input_control (维度为4的one-hot矢量)   controlInputs = [2,5,3,4] # Control signal, int ( 2 Follow lane, 3 Left, 4 Right, 5 Straight), 比如[0 1 0 0]表示 Straight
+         input_data[0]: 一维表示输入的控制量input_control (维度为4的one-hot矢量)   controlInputs = [2,5,3,4] # Control signal, int ( 2 Follow lane, 3 Left, 4 Right, 5 Straight), 比如[0 1 0 0]表示 Straighut
          input_data[1]: 测量量input_speed（一个维度）
 ### 网络输出数据/网络标签值
  - targets：维度为2的列表
