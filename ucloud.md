@@ -20,7 +20,7 @@ sudo python tf_tool.py pack \
             --public_key=/HOySV2WKVkciASUmRP9dlLzVhiRTmSHz2mx9jHmmXdsehqAVrWOdA== \
 			--private_key=f0d85113ac1f17ff822e2f63dc195109280982fd \
 			--code_path=./code/ \
-			--mainfile_path=mnist_summary.py \
+			--mainfile_path=train.py \
 			--uhub_username=476226078@qq.com \
 			--uhub_password=cmbjxX666 \
 			--uhub_registry=trytrain \
@@ -35,7 +35,7 @@ sudo python tf_tool.py pack \
 sudo docker build -t test-cpu:uaitrain -f uaitrain-cpu.Dockerfile .
 
 本地运行
-sudo docker run -it -v /data/test/data/:/data/data -v /data/test/output/:/data/output test-cpu:uaitrain /bin/bash -c "cd /data && /usr/bin/python /data/mnist_summary.py --max_step=2000 --work_dir=/data --data_dir=/data/data --output_dir=/data/output --log_dir=/data/output"
+sudo docker run -it -v /data/test/data/:/data/data -v /data/test/output/:/data/output test-cpu:uaitrain /bin/bash -c "cd /data && /usr/bin/python /data/train.py --max_step=2000 --work_dir=/data --data_dir=/data/data --output_dir=/data/output --log_dir=/data/output"
 
 上传镜像
 sudo docker push uhub.service.ucloud.cn/trytrain/trainjx:uaitrain
