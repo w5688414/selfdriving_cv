@@ -51,12 +51,15 @@ params = [trainScratch, dropoutVec, image_cut, learningRate, beta1, beta2, num_i
 # GPU configuration
 config = tf.ConfigProto(allow_soft_placement = True)
 # read an example h5 file
-datasetDirTrain = '/home/ydx/AutoCarlaData/AgentHuman/SeqTrain/'
-datasetDirVal = '/home/ydx/AutoCarlaData/AgentHuman/SeqVal/'
+datasetDirTrain = '/mnt/AgentHuman/SeqTrain/'
+datasetDirVal = '/mnt/AgentHuman/SeqVal/'
 
 datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5')
 datasetFilesVal = glob.glob(datasetDirVal+'*.h5')
+
 print("Len train:{0},len val{1}".format(len(datasetFilesTrain),len(datasetFilesVal)))
+
+import itertools
 
 
 def genData(fileNames=datasetFilesTrain, batchSize=200):
@@ -109,8 +112,11 @@ def genBranch(fileNames=datasetFilesTrain, branchNum=3, batchSize=200):
                     counter += 1
                     data.close()
             except:
-                print(idx, fileNames[idx])            
+                print(idx, fileNames[idx])
         yield (batchX, batchY)
+
+
+
 
 
 st = lambda aug: iaa.Sometimes(0.4, aug)
@@ -125,7 +131,14 @@ seq = iaa.Sequential([
         st(iaa.Multiply((0.10, 2.5), per_channel=0.2)), # change brightness of images (X-Y% of original value)
         rl(iaa.ContrastNormalization((0.5, 1.5), per_channel=0.5)), # improve or worsen the contrast
         #rl(iaa.Grayscale((0.0, 1))), # put grayscale
-        ], random_order=True)
+], random_order=True)
+
+
+# source: https://github.com/carla-simulator/imitation-learning
+import numpy as np
+
+import tensorflow as tf
+
 
 def weight_ones(shape, name):
     initial = tf.constant(1.0, shape=shape, name=name)
@@ -136,9 +149,11 @@ def weight_xavi_init(shape, name):
     initial = tf.get_variable(name=name, shape=shape, initializer=tf.contrib.layers.xavier_initializer())
     return initial
 
+
 def bias_variable(shape, name):
     initial = tf.constant(0.1, shape=shape, name=name)
     return tf.Variable(initial)
+
 
 class Network(object):
 
@@ -284,6 +299,7 @@ def load_imitation_learning_network(input_image, input_data, input_size, dropout
     print (x)
     """ fc2 """
     x = network_manager.fc_block(x, 512)
+
     """Process Control"""
 
     """ Speed (measurements)"""
@@ -336,18 +352,18 @@ def controlNet(inputs, targets, shape, dropoutVec, branchConfig, params, scopeNa
             """
             Now it works as multiplication of one hot encoded mask and reducing sum of losses.
             Could be also possilbe to do something like that:
-  
+
             def f0(): return tf.square(tf.subtract(networkTensor[0], targets[0])
             def f1(): return tf.square(tf.subtract(networkTensor[1], targets[1]))
             ... other two branches ...
-            b =  inputs[1][0] # branch number 
+            b =  inputs[1][0] # branch number
             # construct case operation in graph
             conditioned_loss = tf.case({tf.equal(b, tf.constant(0)): f0, tf.equal(b, tf.constant(1)): f1,
                       ... },
                       default=f3, exclusive=True)
             ..minimize(conditioned_loss)
 
-            That should be enough. I tested this approach in another project, should work here too.  
+            That should be enough. I tested this approach in another project, should work here too.
             """
             parts = []
             for i in range(0, len(branchConfig)):
@@ -364,7 +380,7 @@ def controlNet(inputs, targets, shape, dropoutVec, branchConfig, params, scopeNa
             mask = tf.convert_to_tensor(inputs[1][0])
             pr = tf.Print(mask, [mask], summarize=5) # one hot vector of branch num % 4 (e.g. for 5: [0,1,0,0])
             print(mask.get_shape())
-            contLoss = tf.reduce_sum(tf.multiply(tf.reduce_mean(means), mask)) # e.g. sets to 0 all branches except 5 
+            contLoss = tf.reduce_sum(tf.multiply(tf.reduce_mean(means), mask)) # e.g. sets to 0 all branches except 5
             contSolver = tf.train.AdamOptimizer(learning_rate=params[3],
                                                 beta1=params[4], beta2=params[5]).minimize(contLoss)
         tensors = {
@@ -376,7 +392,7 @@ def controlNet(inputs, targets, shape, dropoutVec, branchConfig, params, scopeNa
     return tensors
 
 
-
+import tensorflow as tf
 
 
 # params = [trainScratch, dropoutVec, image_cut, learningRate, beta1, beta2, num_images, iterNum, batchSize, valBatchSize, NseqVal, epochs, samplesPerEpoch, L2NormConst]
@@ -410,9 +426,10 @@ def Net(branchConfig, params, timeNumberFrames, prefSize=(128, 160, 3)):
     }
     return tensors  # [ inputs['inputImages','inputData'], targets['targetSpeed', 'targetController'],  'params', dropoutVec', output[optimizers, losses, branchesOutputs] ]
 
-
+trainScratch = True
 tf.reset_default_graph()
 sessGraph = tf.Graph()
+
 
 
 # use many gpus
@@ -491,11 +508,11 @@ with sessGraph.as_default():
                             netTensors['targets'][0]: ys[:, 10].reshape([batchSize, 1]),
                             netTensors['targets'][1]: ys[:, 0:3]}
 
-               
+
                 _, p, loss_value = sess.run([contSolver, pr, contLoss], feed_dict=feedDict)
 #                print(merged_summary_op)
 #                summary = merged_summary_op.eval(feed_dict=feedDict)
-                if steps % 10 == 0:  
+                if steps % 10 == 0:
 #                    summary_writer.add_summary(summary, epoch * num_images/batchSize + j)
                     print("  Train::: Epoch: %d, Step: %d, TotalSteps: %d, Loss: %g" %
                       (epoch, epoch * batchSize + j, steps, loss_value), cBranchesOutList[cur_branch])
