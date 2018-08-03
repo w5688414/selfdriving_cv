@@ -1,5 +1,5 @@
 """
-@author: @merryHunter, @mvpcom
+@author: @car deviles
 Based on carlaTrain.ipynb.
 
 Changes:
@@ -15,7 +15,6 @@ from tensorflow.core.protobuf import saver_pb2
 import time
 import glob
 import os
-import imgaug as ia
 from imgaug import augmenters as iaa
 import numpy as np
 import h5py
@@ -43,44 +42,17 @@ beta1 = 0.7
 beta2 = 0.85
 controlInputs = [2,5,3,4] # Control signal, int ( 2 Follow lane, 3 Left, 4 Right, 5 Straight)
 cBranchesOutList = ['Follow Lane','Go Left','Go Right','Go Straight','Speed Prediction Branch']
-
 controlInputs = [2,5,3,4]
 branchConfig = [["Steer", "Gas", "Brake"], ["Steer", "Gas", "Brake"], \
-                     ["Steer", "Gas", "Brake"], ["Steer", "Gas", "Brake"],
-#                 ["Speed"] # turn of speed branch for the moment
+                ["Steer", "Gas", "Brake"], ["Steer", "Gas", "Brake"],
+#               ["Speed"] # turn of speed branch for the moment
                ]
 params = [trainScratch, dropoutVec, image_cut, learningRate, beta1, beta2, num_images, iterNum, batchSize, valBatchSize, NseqVal, epochs, samplesPerEpoch, L2NormConst]
-
 # GPU configuration
 config = tf.ConfigProto(allow_soft_placement = True)
-# config.gpu_options.visible_device_list = '0'
-# config.gpu_options.per_process_gpu_memory_fraction = memory_fraction
-
-# vpcom Special function for visualization
-def plotSpecialTool(data,labels,samples2Visualize=12,factors=[2,6], grayFlag=False, figSize=(12,3), fontsize = 7):
-    # samples2Visualize = 12 # sample 12 random number
-    # factors = [2,6] # indicate two factors for number of samples
-    assert np.prod(np.array(factors))==samples2Visualize, "%rx%r is not equal to %r" % (factors[0],factors[1],samples2Visualize)
-    figure = plt.figure(figsize=figSize)
-    nLimit = data.shape[0]
-    for i in range(1,samples2Visualize+1):
-        img = figure.add_subplot(factors[0],factors[1],i)
-        # randomly sample an image from train set
-        imgID = np.random.randint(nLimit-1)
-        image = data[imgID]
-        if grayFlag:
-            plt.imshow(image.reshape(image.shape[0],image.shape[1]), cmap=plt.get_cmap('gray'))
-        else:
-            plt.imshow(image)
-        img.set_title(["{:06.4f}".format(x) for x in labels[imgID]],fontsize=fontsize)
-        plt.axis('off')
-
-
-
 # read an example h5 file
 datasetDirTrain = '/home/eric/self-driving/AgentHuman/SeqTrain/'
 datasetDirVal = '/home/eric/self-driving/AgentHuman/SeqVal/'
-
 
 datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5')
 datasetFilesVal = glob.glob(datasetDirVal+'*.h5')
