@@ -10,14 +10,7 @@ Changes:
 - no summary
 - tf printsfor branches
 """
-import sys
-# sys.version
-# sys.version_info
-
 import tensorflow as tf
-import keras
-print(tf.__version__)
-print(keras.__version__)
 from tensorflow.core.protobuf import saver_pb2
 import time
 import glob
@@ -26,9 +19,6 @@ import imgaug as ia
 from imgaug import augmenters as iaa
 import numpy as np
 import h5py
-
-from keras.layers import ConvLSTM2D, MaxPool3D, BatchNormalization, MaxPool2D
-from tensorflow.contrib.layers import batch_norm
 
 timeNumberFrames = 1 #4 # number of frames in each samples
 batchSize = 120 # size of batch
@@ -88,8 +78,8 @@ def plotSpecialTool(data,labels,samples2Visualize=12,factors=[2,6], grayFlag=Fal
 
 
 # read an example h5 file
-datasetDirTrain = '/mnt/AgentHuman/SeqTrain/'
-datasetDirVal = '/mnt/AgentHuman/SeqVal/'
+datasetDirTrain = '/home/eric/self-driving/AgentHuman/SeqTrain/'
+datasetDirVal = '/home/eric/self-driving/AgentHuman/SeqVal/'
 
 
 datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5')
