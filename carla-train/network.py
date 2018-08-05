@@ -187,3 +187,76 @@ def make_network():
             'labels': [target_control],
             'outputs': [control_out]}
 
+def make_network(input_image,input_data):
+    inp_img = input_image
+    inp_speed = input_data[1]
+
+    target_control = input_data[0]
+    #target_command = tf.placeholder(tf.float32, shape=[None, 4], name='target_command')
+
+    network_manager = Network()
+
+    xc = network_manager.conv_block(inp_img, 5, 2, 32, padding_in='VALID')
+    print (xc)
+    xc = network_manager.conv_block(xc, 3, 1, 32, padding_in='VALID')
+    print (xc)
+
+    xc = network_manager.conv_block(xc, 3, 2, 64, padding_in='VALID')
+    print (xc)
+    xc = network_manager.conv_block(xc, 3, 1, 64, padding_in='VALID')
+    print (xc)
+
+    xc = network_manager.conv_block(xc, 3, 2, 128, padding_in='VALID')
+    print (xc)
+    xc = network_manager.conv_block(xc, 3, 1, 128, padding_in='VALID')
+    print (xc)
+
+    xc = network_manager.conv_block(xc, 3, 1, 256, padding_in='VALID')
+    print (xc)
+    xc = network_manager.conv_block(xc, 3, 1, 256, padding_in='VALID')
+    print (xc)
+
+    x = tf.reshape(xc, [-1, int(np.prod(xc.get_shape()[1:]))], name='reshape')
+    print (x)
+
+    x = network_manager.fc_block(x, 512, dropout_prob=0.7)
+    print (x)
+    x = network_manager.fc_block(x, 512, dropout_prob=0.7)
+
+    with tf.name_scope("Speed"):
+        speed = network_manager.fc_block(inp_speed, 128, dropout_prob=0.5)
+        speed = network_manager.fc_block(speed, 128, dropout_prob=0.5)
+
+    j = tf.concat([x, speed], 1)
+    j = network_manager.fc_block(j, 512, dropout_prob=0.5)
+
+    control_out = network_manager.fc_block(j, 256, dropout_prob=0.5)
+    control_out = network_manager.fc_block(control_out, 256)
+    control_out = network_manager.fc(control_out, 3)
+    loss = tf.reduce_sum(tf.square(tf.subtract(control_out, target_control)))
+
+    '''
+    branch_config = [["Steer", "Gas", "Brake"], ["Steer", "Gas", "Brake"], \
+                     ["Steer", "Gas", "Brake"], ["Steer", "Gas", "Brake"]]
+
+    branches = []
+    losses = []
+    for i in range(0, len(branch_config)):
+        with tf.name_scope("Branch_" + str(i)):
+            branch_output = network_manager.fc_block(j, 256, dropout_prob=0.5)
+            branch_output = network_manager.fc_block(branch_output, 256)
+            branches.append(network_manager.fc(branch_output, len(branch_config[i])))
+            losses.append(tf.square(tf.subtract(branches[i], target_control)))
+
+        print (branch_output)
+
+    losses = tf.convert_to_tensor(losses)
+    losses = tf.reduce_mean(tf.transpose(losses, [1, 2, 0]), axis=1) * target_command;
+    loss = tf.reduce_sum(losses)
+    '''
+
+    return {'loss': loss,
+            'inputs': [inp_img, inp_speed],
+            'labels': [target_control],
+            'outputs': [control_out]}
+
