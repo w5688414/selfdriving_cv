@@ -532,7 +532,7 @@ with sessGraph.as_default():
                     print("  Val::: Epoch: %d, Step: %d, TotalSteps: %d, Loss: %g" %
                           (epoch, epoch * batchSize + j, steps, loss_value), cBranchesOutList[cur_branch])
 
-                if steps % 250 == 0 and steps != 0:  # batchSize
+                if steps % 25 == 0 and steps != 0:  # batchSize
                     print(j % 250, '  Save Checkpoint ...')
                     if not os.path.exists(modelPath):
                         os.makedirs(modelPath)

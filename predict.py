@@ -22,8 +22,8 @@ import numpy as np
 import h5py
 
 # read an example h5 file
-datasetDirTrain = '/home/ydx/AutoCarlaData/AgentHuman/SeqTrain/'
-datasetDirVal = '/home/ydx/AutoCarlaData/AgentHuman/SeqVal/'
+datasetDirTrain = '/home/eric/self-driving/AgentHuman/SeqTrain/'
+datasetDirVal = '/home/eric/self-driving/AgentHuman/SeqVal/'
 datasetFilesTrain = glob.glob(datasetDirTrain+'*.h5')
 datasetFilesVal = glob.glob(datasetDirVal+'*.h5')
 print("Len train:{0},len val{1}".format(len(datasetFilesTrain),len(datasetFilesVal)))
@@ -198,9 +198,10 @@ with sessGraph.as_default():
         saver.restore(sess, "./test/model.ckpt")  # restore trained parameters
         graph=tf.get_default_graph()
         x=graph.get_operation_by_name('input_image').outputs[0]
-        y=tf.get_collection("predict")
+        y=tf.get_collection("target_control")
         feedDict = {x: image_input}
         output_all = sess.run(y, feed_dict=feedDict)
+        print(output_all)
 
 # source: https://github.com/carla-simulator/imitation-learning
 def load_imitation_learning_network(input_image, input_data, input_size, dropout):
