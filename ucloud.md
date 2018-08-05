@@ -8,7 +8,8 @@ ssh ubuntu@117.50.23.79
 
 上传本地文件到远程机器指定目录
 scp -r /home/ydx/Desktop/Auto\ Vechicles/CORL2017ImitationLearningData.tar.gz ubuntu@117.50.22.59:/data
-ssh ubuntu@117.50.22.59
+从服务器上下载指定目录到本机：
+scp -r  ubuntu@117.50.23.79:~/carla-train /home/eric/
 查看云端文件
 df -h
 
