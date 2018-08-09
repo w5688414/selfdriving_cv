@@ -14,7 +14,10 @@ scp -r  ubuntu@117.50.23.79:~/carla-train /home/eric/
 df -h
 
 ```
-
+## tensorboard 使用
+```
+tensorboard --logdir=/tmp --port=8008
+```
 ## UAI Train训练平台
 ```
 sudo python tf_tool.py pack \
