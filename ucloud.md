@@ -16,7 +16,9 @@ df -h
 ```
 ## tensorboard 使用
 ```
-tensorboard --logdir=/tmp --port=8008
+tensorboard --logdir=/tmp --port=6005
+ssh -L 6005:127.0.0.1:6005 ubuntu@117.50.10.71
+ssh之后去浏览器打开127.0.0.1:6005
 ```
 ## UAI Train训练平台
 ```
@@ -54,6 +56,7 @@ sudo docker push uhub.service.ucloud.cn/trytrain/trainjx:uaitrain
 [使用UAI Train训练平台][2]
 
 [使用UFile管理工具上传下载数据][3]
+
 
 [1]: https://docs.ucloud.cn/ai/uai-train/guide/tensorflow/packing
 [2]: https://docs.ucloud.cn/ai/uai-train/tutorial/tf-mnist/train
