@@ -4,7 +4,10 @@ this is the repository of deep learning for self driving
 # linux tutorials
 Ubuntu14.04下搜狗输入法安装：
 https://blog.csdn.net/u011006622/article/details/69281580
+
 记录：Ubuntu14.04 下 chrome的安装过程: https://blog.csdn.net/m0_37676373/article/details/78616715
+
+Ubuntu 14.04右键终端的设置：https://www.linuxidc.com/Linux/2014-04/100498.htm
 
 # environment
 ```
