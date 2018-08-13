@@ -20,6 +20,17 @@ tensorboard --logdir=/tmp --port=6005
 ssh -L 6005:127.0.0.1:6005 ubuntu@117.50.10.71
 ssh之后去浏览器打开127.0.0.1:6005
 ```
+
+## vim 命令
+```
+ yy    复制整行（nyy或者yny ，复制n行，n为数字）； 
+ p      小写p代表贴至游标后（下），因为游标是在具体字符的位置上，所以实际是在该字符的后面 
+ P      大写P代表贴至游标前（上） 
+    整行的复制粘贴在游标的上（下）一行，非整行的复制则是粘贴在游标的前（后）
+dd:删除游标所在的一整行(常用)
+ndd:n为数字。删除光标所在的向下n行，例如20dd则是删除光标所在的向下20行
+```
+
 ## UAI Train训练平台
 ```
 sudo python tf_tool.py pack \
@@ -57,8 +68,13 @@ sudo docker push uhub.service.ucloud.cn/trytrain/trainjx:uaitrain
 
 [使用UFile管理工具上传下载数据][3]
 
+[vim 删除一整块，vim 删除一整行][4]
+
+[vi/vim复制粘贴命令][5]
+
 
 [1]: https://docs.ucloud.cn/ai/uai-train/guide/tensorflow/packing
 [2]: https://docs.ucloud.cn/ai/uai-train/tutorial/tf-mnist/train
 [3]: https://docs.ucloud.cn/ai/uai-train/base/ufile/files
-
+[4]: https://blog.csdn.net/chenyoper/article/details/78260007
+[5]: https://blog.csdn.net/lanxinju/article/details/5727262

@@ -135,7 +135,7 @@ class DemoLearning(Agent):
             (1, self._image_size[0], self._image_size[1], self._image_size[2]))
 
         # Normalize with the maximum speed from the training set ( 90 km/h)
-        speed = np.array(speed / 25.0)
+        speed = np.array(speed)
 
         speed = speed.reshape((1, 1))
 
