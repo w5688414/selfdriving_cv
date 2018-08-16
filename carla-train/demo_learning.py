@@ -5,7 +5,7 @@ slim = tf.contrib.slim
 import scipy
 from carla.agent import Agent
 from carla.carla_server_pb2 import Control
-from network import make_network
+from network_fine_tune import make_network
 
 class DemoLearning(Agent):
     def __init__(self, city_name, avoid_stopping, memory_fraction=0.25, image_cut=[115, 510]):
@@ -21,7 +21,7 @@ class DemoLearning(Agent):
         # config_gpu.gpu_options.visible_device_list = '0'
 
         # config_gpu.gpu_options.per_process_gpu_memory_fraction = memory_fraction
-
+        
         self._image_size = (88, 200, 3)
         self._avoid_stopping = avoid_stopping
 
@@ -45,10 +45,10 @@ class DemoLearning(Agent):
         
         # with tf.name_scope("Network"):
         #     self._network_tensor = make_network()
-        self._network_tensor = make_network(self._input_images,self._input_data)
+        self._network_tensor = make_network()
         dir_path = os.path.dirname(__file__)
 
-        self._models_path = dir_path + '/data/'
+        self._models_path = dir_path + '/data_fine_tune/'
 
         # tf.reset_default_graph()
         self._sess.run(tf.global_variables_initializer())
@@ -126,7 +126,7 @@ class DemoLearning(Agent):
 
     def _control_function(self, image_input, speed, control_input, sess):
 
-        branches = self._network_tensor
+        # branches = self._network_tensor
         x = self._input_images
         dout = self._dout
         input_speed = self._input_data[1]
@@ -135,7 +135,7 @@ class DemoLearning(Agent):
             (1, self._image_size[0], self._image_size[1], self._image_size[2]))
 
         # Normalize with the maximum speed from the training set ( 90 km/h)
-        speed = np.array(speed / 25.0)
+        speed = np.array(speed)
 
         speed = speed.reshape((1, 1))
 
@@ -148,31 +148,31 @@ class DemoLearning(Agent):
         # else:
         #     all_net = branches[1]
 
-        all_net=branches
-        feedDict = {x: image_input, input_speed: speed}
+        # all_net=branches
+        feedDict = {self._network_tensor['inputs'][0]: image_input, self._network_tensor['inputs'][1]: speed,self._network_tensor['train_state']: False}
 
-        output_all = sess.run(all_net, feed_dict=feedDict)
+        output_all = sess.run(self._network_tensor['outputs'], feed_dict=feedDict)
+        print(output_all[0][0][0])
+        predicted_steers = (output_all[0][0][0])
 
-        predicted_steers = (output_all[0][0])
+        predicted_acc = (output_all[0][0][1])
 
-        predicted_acc = (output_all[0][1])
+        predicted_brake = (output_all[0][0][2])
 
-        predicted_brake = (output_all[0][2])
+        # if self._avoid_stopping:
+        #     predicted_speed = sess.run(branches[4], feed_dict=feedDict)
+        #     predicted_speed = predicted_speed[0][0]
+        #     real_speed = speed * 25.0
 
-        if self._avoid_stopping:
-            predicted_speed = sess.run(branches[4], feed_dict=feedDict)
-            predicted_speed = predicted_speed[0][0]
-            real_speed = speed * 25.0
+        #     real_predicted = predicted_speed * 25.0
+        #     if real_speed < 2.0 and real_predicted > 3.0:
+        #         # If (Car Stooped) and
+        #         #  ( It should not have stopped, use the speed prediction branch for that)
 
-            real_predicted = predicted_speed * 25.0
-            if real_speed < 2.0 and real_predicted > 3.0:
-                # If (Car Stooped) and
-                #  ( It should not have stopped, use the speed prediction branch for that)
+        #         predicted_acc = 1 * (5.6 / 25.0 - speed) + predicted_acc
 
-                predicted_acc = 1 * (5.6 / 25.0 - speed) + predicted_acc
+        #         predicted_brake = 0.0
 
-                predicted_brake = 0.0
-
-                predicted_acc = predicted_acc[0][0]
+        #         predicted_acc = predicted_acc[0][0]
 
         return predicted_steers, predicted_acc, predicted_brake
