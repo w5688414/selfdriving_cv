@@ -13,6 +13,9 @@ scp -r  ubuntu@117.50.23.79:~/carla-train /home/eric/
 查看云端文件
 df -h
 
+chmod –R 777 * :
+参数-R : 对目前目录下的所有档案与子目录进行相同的权限变更(即以递回的方式逐个变更)
+
 ```
 ## tensorboard 使用
 ```
@@ -30,6 +33,8 @@ ssh之后去浏览器打开127.0.0.1:6005
 dd:删除游标所在的一整行(常用)
 ndd:n为数字。删除光标所在的向下n行，例如20dd则是删除光标所在的向下20行
 ```
+## ucloud 挂载云盘
+https://docs.ucloud.cn/storage_cdn/udisk/userguide/format/linux
 
 ## UAI Train训练平台
 ```
