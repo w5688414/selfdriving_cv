@@ -34,6 +34,9 @@ dd:删除游标所在的一整行(常用)
 ndd:n为数字。删除光标所在的向下n行，例如20dd则是删除光标所在的向下20行
 ```
 ## ucloud 挂载云盘
+```
+ mount /dev/vde /tenplus
+```
 https://docs.ucloud.cn/storage_cdn/udisk/userguide/format/linux
 
 ## UAI Train训练平台
