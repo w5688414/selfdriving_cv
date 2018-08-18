@@ -33,6 +33,15 @@ ssh之后去浏览器打开127.0.0.1:6005
 dd:删除游标所在的一整行(常用)
 ndd:n为数字。删除光标所在的向下n行，例如20dd则是删除光标所在的向下20行
 ```
+
+## tmux 命令
+```
+tmux new -s demo # 新建一个名称为demo的会话
+tmux a -t demo # 进入到名称为demo的会话
+Ctrl+b	d	断开当前会话
+```
+https://blog.csdn.net/chenqiuge1984/article/details/80132042
+
 ## ucloud 挂载云盘
 ```
  mount /dev/vde /tenplus
